@@ -1,4 +1,3 @@
-// import { ProductModel3D } from "@/app/(store)/product/[slug]/product-model3d";
 import { ProductImageModal } from "@/app/(store)/product/[slug]/product-image-modal";
 import {
 	Breadcrumb,
@@ -24,6 +23,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next/types";
 import { Suspense } from "react";
+import { ProductModel3D } from "@/app/(store)/product/[slug]/product-model3d";
+import fs from "fs/promises";
+import path from "path";
 
 export const generateMetadata = async (props: {
 	params: Promise<{ slug: string }>;
@@ -54,6 +56,21 @@ export const generateMetadata = async (props: {
 	} satisfies Metadata;
 };
 
+async function getProductImages(category: string | undefined, slug: string): Promise<string[]> {
+	if (!category) return [];
+	
+	try {
+		const imagesDir = path.join(process.cwd(), 'public', 'images', category, slug);
+		const files = await fs.readdir(imagesDir);
+		return files
+			.filter(file => /\.(jpg|jpeg|png|webp)$/i.test(file))
+			.map(file => `/images/${category}/${slug}/${file}`);
+	} catch (error) {
+		console.warn(`Failed to read product images for ${category}/${slug}:`, error);
+		return [];
+	}
+}
+
 export default async function SingleProductPage(props: {
 	params: Promise<{ slug: string }>;
 	searchParams: Promise<{ variant?: string; image?: string }>;
@@ -73,11 +90,15 @@ export default async function SingleProductPage(props: {
 	const locale = await getLocale();
 
 	const category = product.metadata.category;
-	const images = product.images;
+	const slug = params.slug;
+	const images = await getProductImages(category, slug);
+	
+	// Fallback to product.images if no images found in the directory
+	const displayImages = images.length > 0 ? images : product.images;
 
 	return (
-		<article className="pb-12">
-			<Breadcrumb>
+		<article className="pb-12 px-8">
+			<Breadcrumb className="px-4">
 				<BreadcrumbList>
 					<BreadcrumbItem>
 						<BreadcrumbLink asChild className="inline-flex min-h-12 min-w-12 items-center justify-center">
@@ -112,7 +133,7 @@ export default async function SingleProductPage(props: {
 			<StickyBottom product={product} locale={locale}>
 				<div className="mt-4 grid gap-4 lg:grid-cols-12">
 					<div className="lg:col-span-5 lg:col-start-8">
-						<h1 className="text-3xl font-bold leading-none tracking-tight text-foreground">{product.name}</h1>
+						<h1 className="text-3xl font-bold leading-none tracking-tight text-foreground">{product.name.toUpperCase()}</h1>
 						{product.default_price.unit_amount && (
 							<p className="mt-2 text-2xl font-medium leading-none tracking-tight text-foreground/70">
 								{formatMoney({
@@ -128,11 +149,17 @@ export default async function SingleProductPage(props: {
 					<div className="lg:col-span-7 lg:row-span-3 lg:row-start-1">
 						<h2 className="sr-only">{t("imagesTitle")}</h2>
 
-						<div className="grid gap-4 lg:grid-cols-3 [&>*:first-child]:col-span-3">
-							{/* {product.metadata.preview && (
-								<ProductModel3D model3d={product.metadata.preview} imageSrc={product.images[0]} />
-							)} */}
-							{images.map((image, idx) => {
+						<div className="grid gap-4 lg:grid-cols-3 [&>*:first-child]:col-span-3">																			
+							<div className="col-span-3">
+								<Suspense fallback={
+									<div className="w-full h-[350px] rounded-lg bg-neutral-100 flex items-center justify-center">
+										<p>Loading 3D model...</p>
+									</div>
+								}>
+									<ProductModel3D productName={product.name} category={product.metadata.category} />
+								</Suspense>
+							</div>
+							{displayImages.map((image, idx) => {
 								const params = new URLSearchParams({
 									image: idx.toString(),
 								});
@@ -218,7 +245,7 @@ export default async function SingleProductPage(props: {
 			</Suspense>
 
 			<Suspense>
-				<ProductImageModal images={images} />
+				<ProductImageModal images={displayImages} />
 			</Suspense>
 
 			<JsonLd jsonLd={mappedProductToJsonLd(product)} />

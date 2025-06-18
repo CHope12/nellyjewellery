@@ -2,30 +2,29 @@ import { getTranslations } from "@/i18n/server";
 import StoreConfig from "@/store.config";
 import { Newsletter } from "@/ui/footer/newsletter.client";
 import { YnsLink } from "@/ui/yns-link";
-import type { SVGAttributes } from "react";
 
 const sections = [
 	{
-		header: "Products",
+		header: "Categories",
 		links: StoreConfig.categories.map(({ name, slug }) => ({
 			label: name,
 			href: `/category/${slug}`,
 		})),
 	},
 	{
-		header: "Support",
+		header: "About",
 		links: [
 			{
-				label: "Features",
-				href: "https://yournextstore.com/#features",
+				label: "Story",
+				href: "/story",
 			},
 			{
-				label: "Pricing",
-				href: "https://yournextstore.com/#pricing",
+				label: "Blog",
+				href: "/blog",
 			},
 			{
-				label: "Contact Us",
-				href: "mailto:hi@yournextstore.com",
+				label: "Contact",
+				href: "mailto:hi@nelly.co.uk",
 			},
 		],
 	},
@@ -35,7 +34,7 @@ export async function Footer() {
 	const t = await getTranslations("Global.footer");
 
 	return (
-		<footer className="w-full bg-neutral-50 p-6 text-neutral-800 md:py-12">
+		<footer className="w-full bg-neutral-50 p-6 text-neutral-800 md:py-12 pb-12">
 			<div className="container flex max-w-7xl flex-row flex-wrap justify-center gap-16 text-sm sm:justify-between">
 				<div className="">
 					<div className="flex w-full max-w-sm flex-col gap-2">
@@ -61,39 +60,35 @@ export async function Footer() {
 					))}
 				</nav>
 			</div>
-			<div className="container mt-8 flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-neutral-500 md:flex-row">
+			<div className="container mt-8 flex max-w-7xl flex-col-reverse sm:flex-row items-center justify-between gap-4 text-sm text-neutral-500 md:flex-row">
 				<div>
-					<p>© 2024 Your Next Store</p>
-					<p>Delightful commerce for everyone</p>
+					<p>© {new Date().getFullYear()} Nelly</p>
+					{/*<p>Delightful commerce for everyone</p>*/}
 				</div>
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-2 sm:gap-4 text-center">
 					<YnsLink
 						className="inline-flex items-center gap-1 transition-colors hover:text-neutral-700"
-						href="https://x.com/zaiste"
+						href="/refund-policy"
 					>
-						<TwitterIcon className="h-4 w-4" /> @zaiste
-						<span className="sr-only">Twitter</span>
+						Refund Policy
+						<span className="sr-only">Refund Policy</span>
 					</YnsLink>
 					<YnsLink
 						className="inline-flex items-center gap-1 transition-colors hover:text-neutral-700"
-						href="https://x.com/typeofweb"
+						href="/privacy-policy"
 					>
-						<TwitterIcon className="h-4 w-4" /> @typeofweb
-						<span className="sr-only">Twitter</span>
+						 Privacy Policy
+						<span className="sr-only">Privacy Policy</span>
+					</YnsLink>
+					<YnsLink
+						className="inline-flex items-center gap-1 transition-colors hover:text-neutral-700"
+						href="/terms-of-service"
+					>
+						Terms of Service
+						<span className="sr-only">Terms Of Service</span>
 					</YnsLink>
 				</div>
 			</div>
 		</footer>
-	);
-}
-
-function TwitterIcon(props: SVGAttributes<SVGSVGElement>) {
-	return (
-		<svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 596 596" fill="none">
-			<path
-				fill="#fff"
-				d="m1 19 230 307L0 577h52l203-219 164 219h177L353 252 568 19h-52L329 221 179 19H1Zm77 38h82l359 481h-81L78 57Z"
-			/>
-		</svg>
 	);
 }

@@ -26,7 +26,7 @@ export const AddToCartButton = ({
 			id="button-add-to-cart"
 			size="lg"
 			type="submit"
-			className={cn("rounded-full text-lg relative", className)}
+			className={cn("rounded-none text-lg relative bg-[#101010] text-white", className)}
 			onClick={async (e) => {
 				if (isDisabled) {
 					e.preventDefault();
@@ -44,7 +44,7 @@ export const AddToCartButton = ({
 			aria-disabled={isDisabled}
 		>
 			<span className={cn("transition-opacity ease-in", pending ? "opacity-0" : "opacity-100")}>
-				{disabled ? t("disabled") : t("actionButton")}
+				{disabled ? t("disabled") : t("actionButton").toUpperCase()}
 			</span>
 			<span
 				className={cn(

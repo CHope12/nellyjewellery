@@ -16,6 +16,7 @@ export const generateMetadata = async (props: {
 	});
 
 	if (products.length === 0) {
+		console.log("Category not found", params.slug);
 		return notFound();
 	}
 
@@ -43,14 +44,18 @@ export default async function CategoryPage(props: {
 	const t = await getTranslations("/category.page");
 
 	return (
-		<main className="pb-8">
-			<h1 className="text-3xl font-bold leading-none tracking-tight text-foreground">
-				{deslugify(params.slug)}
-				<div className="text-lg font-semibold text-muted-foreground">
-					{t("title", { categoryName: deslugify(params.slug) })}
-				</div>
-			</h1>
-			<ProductList products={products} />
+		<main className="flex flex-col justify-center items-center mx-10">
+			<div className="flex h-76 w-full flex justify-center items-center border-b border-gray-200">
+				<h1 className="text-[32px] leading-none tracking-tight text-foreground pb-8">
+					{deslugify(params.slug).toUpperCase()}
+					<div className="text-lg font-semibold text-muted-foreground">
+					{/*t("title", { categoryName: deslugify(params.slug) })*/}
+					</div>
+				</h1>
+			</div>
+			<div className="flex justify-center items-center mt-6">
+				<ProductList products={products} />
+			</div>
 		</main>
 	);
 }

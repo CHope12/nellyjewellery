@@ -1,10 +1,14 @@
-import AccessoriesImage from "@/images/accessories.jpg";
-import ApparelImage from "@/images/apparel.jpg";
+import SilverRingsImage from "@/images/silver-rings.jpg";
+import SilverNecklacesImage from "@/images/silver-necklaces.jpg";
+import GoldRingsImage from "@/images/gold-rings.jpg";
+import GoldNecklacesImage from "@/images/gold-necklaces.jpg";
 
 export const config = {
 	categories: [
-		{ name: "Apparel", slug: "apparel", image: ApparelImage },
-		{ name: "Accessories", slug: "accessories", image: AccessoriesImage },
+		{ name: "Silver Rings", slug: "silver-rings", image: SilverRingsImage },
+		{ name: "Silver Necklaces", slug: "silver-necklaces", image: SilverNecklacesImage },
+		{ name: "Gold Rings", slug: "gold-rings", image: GoldRingsImage },
+		{ name: "Gold Necklaces", slug: "gold-necklaces", image: GoldNecklacesImage },
 	],
 
 	social: {
